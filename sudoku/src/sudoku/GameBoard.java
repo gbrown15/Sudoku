@@ -71,8 +71,7 @@ public class GameBoard extends JPanel implements UI
 			}
 		}
 		
-
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < 9; i++)
 		{
 			Tile[] row = new Tile[9];
 			Tile[] col = new Tile[9];
@@ -92,24 +91,61 @@ public class GameBoard extends JPanel implements UI
 				test++;
 			}
 			
-			
-			int row = tile.getRow();
-			int col = tile.getCol();
-			int box = tile.getBox();
+			int rowNum = tile.getRow();
+			int colNum = tile.getCol();
+			int boxNum = tile.getBox();
 			
 			int boxRow = tile.getBlockSubRow();
 			int boxCol = tile.getBlockSubCol();
 			
-			Tile[] rows = this.rows.get(row);
-			rows[col] = tile;
-			this.rows.put(row, rows);
+			Tile[] row = this.rows.get(rowNum);
+			row[colNum] = tile;
+			this.rows.put(rowNum, row);
 			
-			Tile[] cols = this.cols.get(col);
-			cols[row] = tile;
-			this.cols.put(col, cols);
+			Tile[] col = this.cols.get(colNum);
+			col[rowNum] = tile;
+			this.cols.put(colNum, col);
 			
-			Tile[] boxes = this.boxes.get(box);
-			boxes[(boxRow * 3) + boxCol] = tile;
+			Tile[] box = this.boxes.get(boxNum);
+			box[(boxRow * 3) + boxCol] = tile;
+		}
+		
+		generateSolutions();
+	}
+	
+	private void generateSolutions()
+	{
+		for(Tile tile : tiles)
+		{
+			int rowNum = tile.getRow();
+			int colNum = tile.getCol();
+			int boxNum = tile.getBox();
+			
+			Tile[] row = this.rows.get(rowNum);
+			Tile[] col = this.cols.get(colNum);
+			Tile[] box = this.boxes.get(boxNum);
+			
+			for(int i = 0; i < 9; i++)
+			{
+				int num = row[i].getSolution();
+				if(num != -1) tile.removePossible(num);
+				num = col[i].getSolution();
+				if(num != -1) tile.removePossible(num);
+				num = box[i].getSolution();
+				if(num != -1) tile.removePossible(num);
+			}
+			
+			boolean[] possibles = tile.getPossibles();
+			
+			for(int i = 1; i < 10; i++)
+			{
+				if(possibles[i] == true) 
+				{
+					tile.assignSolution(i);
+					break;
+				}
+			}
+			
 		}
 	}
 	

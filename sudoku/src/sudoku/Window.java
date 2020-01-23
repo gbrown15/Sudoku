@@ -109,7 +109,6 @@ public class Window extends JFrame implements UI
 	
 	public void openMainMenu()
 	{
-		
 		this.add(mainMenu);
 		this.validate();
 		this.repaint();

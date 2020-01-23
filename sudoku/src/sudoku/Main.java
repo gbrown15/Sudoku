@@ -13,8 +13,6 @@ public class Main
 		Window game = new Window("Suduko - WIP");
 		game.setUp();
 		
-		
-		
 		try
 		{
 			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");

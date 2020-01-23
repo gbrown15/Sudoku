@@ -12,7 +12,7 @@ class Tile extends JPanel implements UI
 	public boolean highlighted = false;
 	
 	private int userInputNum;
-	private int solution = -1;
+	public int solution = -1;
 	
 	public int id;
 	public int box;
@@ -22,7 +22,7 @@ class Tile extends JPanel implements UI
 	private int blockSubRow;
 	private int col;
 	private int row;
-	private boolean[] possibles = new boolean[9];
+	private boolean[] possibles = new boolean[10];
 	
 	public Tile(int id, int blockNumber, int blockSubCol, int blockSubRow)
 	{
@@ -44,7 +44,8 @@ class Tile extends JPanel implements UI
 		this.setName(Integer.toString(id));
 		this.addLabel();
 		
-		for(int i = 0; i < 9; i++)
+		possibles[0] = false;
+		for(int i = 1; i < 10; i++)
 		{
 			possibles[i] = true;
 		}
@@ -53,14 +54,36 @@ class Tile extends JPanel implements UI
 	public void assignSolution(int solution)
 	{
 		this.solution = solution;
+		
+		addSolutionLabel();
+	}
+	
+	private void addSolutionLabel()
+	{
+		String s = Integer.toString(this.solution);
+		
+		JLabel label = new JLabel(s);
+		
+		label.setSize(8, 8);
+		label.setLocation(12, 12);
+		label.setFont(new Font("id", Font.BOLD, 9));
+		this.add(label);
 	}
 	
 	public void removePossible(int num)
 	{
 		this.possibles[num] = false;
-		
 	}
 	
+	public boolean[] getPossibles()
+	{
+		return this.possibles;
+	}
+	
+	public int getSolution()
+	{
+		return this.solution;
+	}
 	public boolean checkSolution()
 	{
 		return (userInputNum == solution) ? true : false;

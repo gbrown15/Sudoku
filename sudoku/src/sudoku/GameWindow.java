@@ -109,9 +109,6 @@ public class GameWindow extends JPanel implements UI
 		boardFrame.add(gameBoard);
 		
 		this.add(boardFrame);
-		
-
-		
 	}
 //
 //	public void displayInfo(int id, int box, int row, int col)
