@@ -1,6 +1,8 @@
 package sudoku;
 
 import java.awt.Font;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,7 +24,8 @@ class Tile extends JPanel implements UI
 	private int blockSubRow;
 	private int col;
 	private int row;
-	private boolean[] possibles = new boolean[10];
+	//private boolean[] possibles = new boolean[10];
+	private Map<Integer, Boolean> possibles = new HashMap<Integer, Boolean>();
 	
 	public Tile(int id, int blockNumber, int blockSubCol, int blockSubRow)
 	{
@@ -44,17 +47,15 @@ class Tile extends JPanel implements UI
 		this.setName(Integer.toString(id));
 		this.addLabel();
 		
-		possibles[0] = false;
 		for(int i = 1; i < 10; i++)
 		{
-			possibles[i] = true;
+			possibles.put(i, true);
 		}
 	}
 	
 	public void assignSolution(int solution)
 	{
 		this.solution = solution;
-		
 		addSolutionLabel();
 	}
 	
@@ -72,10 +73,11 @@ class Tile extends JPanel implements UI
 	
 	public void removePossible(int num)
 	{
-		this.possibles[num] = false;
+		//this.possibles.put(num, false);
+		this.possibles.remove(num);
 	}
 	
-	public boolean[] getPossibles()
+	public Map<Integer, Boolean> getPossibles()
 	{
 		return this.possibles;
 	}
@@ -84,6 +86,7 @@ class Tile extends JPanel implements UI
 	{
 		return this.solution;
 	}
+	
 	public boolean checkSolution()
 	{
 		return (userInputNum == solution) ? true : false;

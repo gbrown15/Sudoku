@@ -6,6 +6,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.JPanel;
 /*
@@ -42,6 +44,8 @@ public class GameBoard extends JPanel implements UI
 	
 	private int highlighted = -1;
 	private Tile[] tiles = new Tile[81];
+	
+	private int lowest = 9;
 
 	public boolean tileActive = false; 
 	
@@ -50,13 +54,18 @@ public class GameBoard extends JPanel implements UI
 		super(null);
 		//this.gameWindow = gameWindow;
 
-
 		this.setSize(280, 280);
 		this.setBackground(menuBGColor);
 		
 		this.setLocation(2, 2);
 		
-
+		this.generatePlayArea();
+		
+		generateSolutions();
+	}
+	
+	private void generatePlayArea()
+	{
 		for(int y = 0; y < 3; y++)
 		{
 			int pY = 94 * y;
@@ -109,104 +118,8 @@ public class GameBoard extends JPanel implements UI
 			Tile[] box = this.boxes.get(boxNum);
 			box[(boxRow * 3) + boxCol] = tile;
 		}
-		
-		generateSolutions();
-	}
-	
-	private void generateSolutions()
-	{
-		for(Tile tile : tiles)
-		{
-			int rowNum = tile.getRow();
-			int colNum = tile.getCol();
-			int boxNum = tile.getBox();
-			
-			Tile[] row = this.rows.get(rowNum);
-			Tile[] col = this.cols.get(colNum);
-			Tile[] box = this.boxes.get(boxNum);
-			
-			for(int i = 0; i < 9; i++)
-			{
-				int num = row[i].getSolution();
-				if(num != -1) tile.removePossible(num);
-				num = col[i].getSolution();
-				if(num != -1) tile.removePossible(num);
-				num = box[i].getSolution();
-				if(num != -1) tile.removePossible(num);
-			}
-			
-			boolean[] possibles = tile.getPossibles();
-			
-			for(int i = 1; i < 10; i++)
-			{
-				if(possibles[i] == true) 
-				{
-					tile.assignSolution(i);
-					break;
-				}
-			}
-			
-		}
-	}
-	
-	public void setActive(int id, int box, int row, int col)
-	{
-		if(tileActive == true)
-		{
-			this.tileActive = false;
-		}
-		
-		this.tileActive = true;
-		
-		activeID  = id;
-		activeBox = box;
-		activeRow = row;
-		activeCol = col;
-		
-		tiles[activeID].highlighted = true;
-		
-		secondaryHighlighting();
 	}
 
-	public void secondaryHighlighting()
-	{
-		Color bgOne, bgTwo;
-		if(this.tileActive == true)
-		{
-			bgOne = influenceHighlightOne;
-			bgTwo = influenceHighlightTwo;
-		}
-		else
-		{
-			bgOne = bgTwo = gameBGColor;
-		}
-		
-		for(Tile rTile : rows.get(this.activeRow))
-		{
-			if(rTile.highlighted == false)
-			{
-				rTile.setBackground(bgTwo);
-				rTile.highlighted = true;
-			}
-		}
-		for(Tile cTile : cols.get(this.activeCol))
-		{
-			if(cTile.highlighted == false)
-			{
-				cTile.setBackground(bgTwo);
-				cTile.highlighted = true;
-			}
-		}
-		for(Tile bTile : boxes.get(this.activeBox))
-		{
-			if(bTile.highlighted == false)
-			{
-				bTile.setBackground(bgOne);
-				bTile.highlighted = true;
-			}
-		}
-	}
-	
 	private JPanel gameBoardSection(int sectionNumber)
 	{
 		JPanel temp = new JPanel(null);
@@ -296,7 +209,179 @@ public class GameBoard extends JPanel implements UI
 		}
 		return temp;
 	}
+	
+	private void generateSolutions()
+	{
+		int boxesFilled = 0;
+		int i = 0;
+		while(boxesFilled < 9) //GB: filling boxes on the diagonal, hopefully fixes holes in solution generation
+		{					   //    EDIT: it didn't.
+			boolean done = false;
+			for(Tile tile : boxes.get(i)) 
+			{
+				Map<Integer, Boolean> temp = tile.getPossibles();
+				
+				if(temp.size() == 0)
+				{
+					System.out.println("Dud Tile ID: " + tile.getID());
+				}
+				else
+				{
+					Object[] possibles = temp.keySet().toArray();
+					int rand = (int)(Math.random() * temp.size());
+					
+					int randSolution = (int)possibles[rand];
+					
+					tile.assignSolution(randSolution);
+					updatePossibles(randSolution, tile.getRow(), tile.getCol(), tile.getBox());
+				}
+			}
+//			Map<Tile, Integer> activeBox = new HashMap<Tile, Integer>();
+//			for(Tile tile : boxes.get(i)) 
+//			{
+//				activeBox.put(tile, tile.getPossibles().size());
+//			}
+//			
+//			this.lowest = 9;
+//			boolean updateLowest = true;
+//			while(!activeBox.isEmpty())
+//			{
+//				for(Tile tile : boxes.get(i))
+//				{
+//					if(activeBox.containsKey(tile))
+//					{
+//						if(updateLowest)
+//						{
+//							Set<Entry<Tile, Integer>> numberOfPossibles = activeBox.entrySet();
+//							for(int j = 0; j < activeBox.size(); j++)
+//							{
+//								numberOfPossibles.forEach(entry -> {
+//									if(((int)entry.getValue()) < lowest)
+//									{
+//										lowest = (int)entry.getValue();
+//									}
+//								});
+//							}
+//						}
+//						
+//						/*Tile has the lowest number of possible solutions in the box*/
+//						if(((int)activeBox.get(tile)) == lowest)
+//						{
+//							Map<Integer, Boolean> temp = tile.getPossibles();
+//							
+//							if(temp.size() == 0)
+//							{
+//								System.out.println("Dud Tile ID: " + tile.getID());
+//								activeBox.remove(tile);
+//							}
+//							else
+//							{
+//								Object[] possibles = temp.keySet().toArray();
+//								int rand = (int)(Math.random() * temp.size());
+//						
+//								int randSolution = (int)possibles[rand];
+//						
+//								tile.assignSolution(randSolution);
+//								updatePossibles(randSolution, tile.getRow(), tile.getCol(), tile.getBox());
+//								
+//								activeBox.remove(tile);
+//								
+//								//GB: lower the number of possible solutions for every tile in the box
+//								activeBox.entrySet().forEach(entry -> {
+//									entry.setValue((entry.getValue() - 1));
+//								});
+//								
+//								if(activeBox.containsValue(lowest - 1)) 
+//								{
+//									lowest -= 1;
+//									updateLowest = false;
+//								}
+//								else
+//								{
+//									updateLowest = true;
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+			i += 4;
+			if(!(i < 9)) i -= 9;
+			boxesFilled++;
+		}
+	}
+	
+	//GB: updates the possible fields for every tile in the specified row, col, and box.
+	private void updatePossibles(int num, int rowNum, int colNum, int boxNum)
+	{
+		Tile[] row = this.rows.get(rowNum);
+		Tile[] col = this.cols.get(colNum);
+		Tile[] box = this.boxes.get(boxNum);
+		for(int i = 0; i < 9; i++)
+		{
+			row[i].removePossible(num);
+			col[i].removePossible(num);
+			box[i].removePossible(num);
+		}
+	}
+	
+	public void setActive(int id, int box, int row, int col)
+	{
+		if(tileActive == true)
+		{
+			this.tileActive = false;
+		}
+		
+		this.tileActive = true;
+		
+		activeID  = id;
+		activeBox = box;
+		activeRow = row;
+		activeCol = col;
+		
+		tiles[activeID].highlighted = true;
+		
+		secondaryHighlighting();
+	}
 
+	public void secondaryHighlighting()
+	{
+		Color bgOne, bgTwo;
+		if(this.tileActive == true)
+		{
+			bgOne = influenceHighlightOne;
+			bgTwo = influenceHighlightTwo;
+		}
+		else
+		{
+			bgOne = bgTwo = gameBGColor;
+		}
+		
+		for(Tile rTile : rows.get(this.activeRow))
+		{
+			if(rTile.highlighted == false)
+			{
+				rTile.setBackground(bgTwo);
+				rTile.highlighted = true;
+			}
+		}
+		for(Tile cTile : cols.get(this.activeCol))
+		{
+			if(cTile.highlighted == false)
+			{
+				cTile.setBackground(bgTwo);
+				cTile.highlighted = true;
+			}
+		}
+		for(Tile bTile : boxes.get(this.activeBox))
+		{
+			if(bTile.highlighted == false)
+			{
+				bTile.setBackground(bgOne);
+				bTile.highlighted = true;
+			}
+		}
+	}
 	
 	public void setInactive()
 	{
