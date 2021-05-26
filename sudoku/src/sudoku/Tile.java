@@ -1,8 +1,8 @@
 package sudoku;
 
 import java.awt.Font;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,8 +24,8 @@ class Tile extends JPanel implements UI
 	private int blockSubRow;
 	private int col;
 	private int row;
-	//private boolean[] possibles = new boolean[10];
-	private Map<Integer, Boolean> possibles = new HashMap<Integer, Boolean>();
+	
+	Vector<Integer> possibles = new Vector<>();
 	
 	public Tile(int id, int blockNumber, int blockSubCol, int blockSubRow)
 	{
@@ -39,8 +39,6 @@ class Tile extends JPanel implements UI
 		this.setCol();
 		this.setRow();
 		
-		
-		
 		this.setBackground(gameBGColor);
 		this.setSize(30, 30);
 		
@@ -48,9 +46,23 @@ class Tile extends JPanel implements UI
 		this.addLabel();
 		
 		for(int i = 1; i < 10; i++)
-		{
-			possibles.put(i, true);
-		}
+	    {
+		    possibles.add(i);
+	    }
+	}
+	
+	public void reset()
+	{
+	    possibles.clear();
+	    for(int i = 1; i < 10; i++)
+        {
+            possibles.add(i);
+        }
+	    
+	    this.removeAll();
+	    this.addLabel();
+	    this.repaint();
+	    this.solution = -1;
 	}
 	
 	public void assignSolution(int solution)
@@ -74,12 +86,34 @@ class Tile extends JPanel implements UI
 	public void removePossible(int num)
 	{
 		//this.possibles.put(num, false);
-		this.possibles.remove(num);
+	    if(this.possibles.contains(num))
+	    {
+	        this.possibles.removeElement(num);
+	    }
 	}
 	
-	public Map<Integer, Boolean> getPossibles()
+	public Vector<Integer> getPossibles()
 	{
 		return this.possibles;
+	}
+	
+	public String stringPossibles()
+	{
+	    String possible = "";
+	    for (int i = 1; i < 10; i++)
+	    {
+	        if (possibles.contains(i)) 
+            {
+	            possible += String.valueOf(i);
+            }
+	        else 
+	        {
+	            possible += "_";
+	        }
+	        possible += " ";
+	    }
+	    
+	    return possible;
 	}
 	
 	public int getSolution()
@@ -98,7 +132,7 @@ class Tile extends JPanel implements UI
 		int blockCol = this.box;
 		while(!done)
 		{
-			if(blockCol - 3 >= 0) blockCol -= 3;
+			if (blockCol - 3 >= 0) blockCol -= 3;
 			else done = true;
 		}
 		this.col = (blockCol * 3) + blockSubCol;

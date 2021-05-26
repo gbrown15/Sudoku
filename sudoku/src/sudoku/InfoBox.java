@@ -63,7 +63,7 @@ public class InfoBox extends JPanel implements UI
 	private void setUp()
 	{
 		this.setSize(60, 80);
-		this.setLocation(440, 0);
+		this.setLocation(0, 0);
 		this.setBackground(gameBGColor);
 	}
 	

@@ -48,6 +48,8 @@ public class Window extends JFrame implements UI
 		    	windowResized();
 		    }
 		});
+		
+		closeMainMenu(); //GB: just for testing purposes
 		return;
 	}
 	
