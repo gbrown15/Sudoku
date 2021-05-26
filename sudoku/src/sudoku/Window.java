@@ -41,12 +41,12 @@ public class Window extends JFrame implements UI
 		//GB: This component listener triggers the windowResized function on resizing
 		this.addComponentListener(new ComponentAdapter()
 		{
-		    public void componentResized(ComponentEvent componentEvent) 
-		    {
-		    	System.out.println("Window Resized");
-		    	
-		    	windowResized();
-		    }
+			public void componentResized(ComponentEvent componentEvent) 
+			{
+				System.out.println("Window Resized");
+			
+				windowResized();
+			}
 		});
 		
 		closeMainMenu(); //GB: just for testing purposes
@@ -74,13 +74,13 @@ public class Window extends JFrame implements UI
 		mainMenu.add(closeMainMenuButton);
 		
 		closeMainMenuButton.addActionListener(new ActionListener()
-	    {
+		{
 			public void actionPerformed(ActionEvent e)
 			{
 				add(gameWindow);
 				closeMainMenu();
 			}
-	    });
+		});
 		
 		openMainMenu();
 		return;
@@ -96,7 +96,7 @@ public class Window extends JFrame implements UI
 		gameWindow.addGameBoard();
 
 		openMainMenuButton.addActionListener(new ActionListener()
-	    {
+		{
 			public void actionPerformed(ActionEvent e)
 			{
 				remove(gameWindow);
@@ -104,7 +104,7 @@ public class Window extends JFrame implements UI
 				repaint();
 				openMainMenu();
 			}
-	    });
+		});
 		
 		return;
 	}
@@ -118,7 +118,7 @@ public class Window extends JFrame implements UI
 	
 	public void closeMainMenu()
 	{
-	    this.add(gameWindow);
+		this.add(gameWindow);
 		this.remove(mainMenu);
 		this.validate();
 		this.repaint();

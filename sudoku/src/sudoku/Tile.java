@@ -46,23 +46,23 @@ class Tile extends JPanel implements UI
 		this.addLabel();
 		
 		for(int i = 1; i < 10; i++)
-	    {
-		    possibles.add(i);
-	    }
+		{
+			possibles.add(i);
+		}
 	}
 	
 	public void reset()
 	{
-	    possibles.clear();
-	    for(int i = 1; i < 10; i++)
-        {
-            possibles.add(i);
-        }
-	    
-	    this.removeAll();
-	    this.addLabel();
-	    this.repaint();
-	    this.solution = -1;
+		possibles.clear();
+		for(int i = 1; i < 10; i++)
+		{
+			possibles.add(i);
+		}
+	
+		this.removeAll();
+		this.addLabel();
+		this.repaint();
+		this.solution = -1;
 	}
 	
 	public void assignSolution(int solution)
@@ -86,10 +86,10 @@ class Tile extends JPanel implements UI
 	public void removePossible(int num)
 	{
 		//this.possibles.put(num, false);
-	    if(this.possibles.contains(num))
-	    {
-	        this.possibles.removeElement(num);
-	    }
+		if(this.possibles.contains(num))
+		{
+			this.possibles.removeElement(num);
+		}
 	}
 	
 	public Vector<Integer> getPossibles()
@@ -99,21 +99,21 @@ class Tile extends JPanel implements UI
 	
 	public String stringPossibles()
 	{
-	    String possible = "";
-	    for (int i = 1; i < 10; i++)
-	    {
-	        if (possibles.contains(i)) 
-            {
-	            possible += String.valueOf(i);
-            }
-	        else 
-	        {
-	            possible += "_";
-	        }
-	        possible += " ";
-	    }
-	    
-	    return possible;
+		String possible = "";
+		for (int i = 1; i < 10; i++)
+		{
+			if (possibles.contains(i)) 
+			{
+				possible += String.valueOf(i);
+			}
+			else 
+			{
+				possible += "_";
+			}
+			possible += " ";
+		}
+	
+		return possible;
 	}
 	
 	public int getSolution()

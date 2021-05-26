@@ -43,8 +43,9 @@ public class GameWindow extends JPanel implements UI
 		boardFrame.setLocation(x1, y1);
 		
 		boardFrame.addMouseListener(new MouseListener() 
-		{//GB: prevents the mouseListener on the GameWindow from catching a mouseEntered
-	     //    event when moving between tiles within the boardFrame
+		{
+			//GB: prevents the mouseListener on the GameWindow from catching a mouseEntered
+			//    event when moving between tiles within the boardFrame
 			@Override
 			public void mouseClicked(MouseEvent e) 
 			{
