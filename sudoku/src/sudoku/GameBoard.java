@@ -3,9 +3,12 @@ package sudoku;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Scanner;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -145,6 +148,46 @@ public class GameBoard extends JPanel implements UI
 				
 				int pX = 31 * col;
 				tile.setLocation(pX, pY);
+
+				tile.setFocusable(true);
+				
+				tile.addKeyListener(new KeyListener() 
+				{
+
+					@Override
+					public void keyTyped(KeyEvent e) 
+					{
+						if(!tile.isSolvedTile() && tile.highlighted == true && activeID == tile.getID())
+						{
+							char eventChar = e.getKeyChar();
+							int eventNum = -1;
+							
+							if     (eventChar == '0') eventNum = 0;
+							else if(eventChar == '1') eventNum = 1;
+							else if(eventChar == '2') eventNum = 2;
+							else if(eventChar == '3') eventNum = 3;
+							else if(eventChar == '4') eventNum = 4;
+							else if(eventChar == '5') eventNum = 5;
+							else if(eventChar == '6') eventNum = 6;
+							else if(eventChar == '7') eventNum = 7;
+							else if(eventChar == '8') eventNum = 8;
+							else if(eventChar == '9') eventNum = 9;
+							
+							if (eventNum != -1) tile.setUserInput(eventNum);
+						}
+					}
+
+					@Override
+					public void keyPressed(KeyEvent e) 
+					{
+					}
+
+					@Override
+					public void keyReleased(KeyEvent e) 
+					{
+					}
+					
+				});
 				tile.addMouseListener(new MouseListener() 
 				{
 					@Override
@@ -171,6 +214,7 @@ public class GameBoard extends JPanel implements UI
 							tile.setBackground(highlightBG);
 							tile.highlighted = true;
 
+							tile.requestFocusInWindow();
 							
 							setActive(tile.getID(), tile.getBox(), tile.getRow(), tile.getCol());
 						}
@@ -205,6 +249,8 @@ public class GameBoard extends JPanel implements UI
 					}
 					
 				});
+
+				
 				
 				tiles[id++] = tile;
 				temp.add(tile);
@@ -229,7 +275,7 @@ public class GameBoard extends JPanel implements UI
 			}
 			else
 			{
-				//System.out.println(current.getID());
+				System.out.println(current.getID());
 
 				//GB: This method of creating the solution occasionally 
 				//    fails, this is handled by resetting the puzzle and
@@ -239,6 +285,8 @@ public class GameBoard extends JPanel implements UI
 			}
 		}
 	}
+	
+	//public void setUserInput(char )
 	
 	private int idOfLeastPossibleSolutions()
 	{
@@ -351,5 +399,19 @@ public class GameBoard extends JPanel implements UI
 			tiles[highlighted].setBackground(gameBGColor);
 		}
 		highlighted = id;
+	}
+	
+	public boolean isSolved()
+	{
+		boolean solved = true;
+		for(Tile tile : tiles)
+		{
+			if(!tile.checkSolution())
+			{
+				solved = false;
+				break;
+			}
+		}
+		return solved;
 	}
 }

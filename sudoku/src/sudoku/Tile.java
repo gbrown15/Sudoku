@@ -4,6 +4,11 @@ import java.awt.Font;
 
 import java.util.Vector;
 
+import java.util.Random;
+
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -24,6 +29,7 @@ class Tile extends JPanel implements UI
 	private int blockSubRow;
 	private int col;
 	private int row;
+	private boolean solvedTile; //GB: tile displays its original value
 	
 	Vector<Integer> possibles = new Vector<>();
 	
@@ -45,6 +51,8 @@ class Tile extends JPanel implements UI
 		this.setName(Integer.toString(id));
 		this.addLabel();
 		
+		this.solvedTile = false;
+		
 		for(int i = 1; i < 10; i++)
 		{
 			possibles.add(i);
@@ -63,12 +71,41 @@ class Tile extends JPanel implements UI
 		this.addLabel();
 		this.repaint();
 		this.solution = -1;
+		this.solvedTile = false;
 	}
 	
 	public void assignSolution(int solution)
 	{
 		this.solution = solution;
-		addSolutionLabel();
+		Random rand = new Random();
+		if(rand.nextBoolean() || rand.nextBoolean())
+		{
+			this.setUserInput(solution);
+			this.solvedTile = true;
+		}
+		
+	}
+	
+	public void setUserInput(int num)
+	{
+		userInputNum = num;
+		addUserLabel();
+	}
+	
+	private void addUserLabel()
+	{
+		this.removeAll();
+		this.addLabel();
+		this.repaint();
+		
+		String s = Integer.toString(this.userInputNum);
+		
+		JLabel label = new JLabel(s);
+		
+		label.setSize(8, 8);
+		label.setLocation(12, 12);
+		label.setFont(new Font("id", Font.BOLD, 9));
+		this.add(label);
 	}
 	
 	private void addSolutionLabel()
@@ -85,7 +122,6 @@ class Tile extends JPanel implements UI
 	
 	public void removePossible(int num)
 	{
-		//this.possibles.put(num, false);
 		if(this.possibles.contains(num))
 		{
 			this.possibles.removeElement(num);
@@ -114,6 +150,11 @@ class Tile extends JPanel implements UI
 		}
 	
 		return possible;
+	}
+	
+	public boolean isSolvedTile()
+	{
+		return this.solvedTile;
 	}
 	
 	public int getSolution()
@@ -166,6 +207,21 @@ class Tile extends JPanel implements UI
 		label.setLocation(0, 0);
 		label.setFont(new Font("id", Font.BOLD, 6));
 		this.add(label);
+	}
+	
+	/*private void setKeyBindings()
+	{
+		ActionMap actionMap = getActionMap();
+		int condition = JComponent.WHEN_IN_FOCUSED_WINDOW;
+		InputMap inputMap = getInputMap(condition);
+		
+		
+	}*/
+	
+	@Override
+	public boolean isFocusTraversable () 
+	{
+		return true ;
 	}
 	
 	@Override
